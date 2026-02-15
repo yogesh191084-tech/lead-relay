@@ -4,7 +4,7 @@ import threading
 
 app = Flask(__name__)
 
-GAS_URL = "https://docs.google.com/spreadsheets/d/11na5_qyFEXxyxU7R0wum67NKPSZ5l0g7-b6hZ0Uqq0o/edit?gid=0#gid=0"
+GAS_URL = "https://script.google.com/macros/s/AKfycbxtR-4ur944ZAFyxMHu0fDgtRcjUjZyez64BMD2QZjMAvLzJ4r_lv7McEqwNFPBQnNd/exec"
 
 
 def send_to_gas(data):
