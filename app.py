@@ -1,11 +1,12 @@
 from flask import Flask, request, jsonify
 import requests
 from flask_cors import CORS
+import os
 
 app = Flask(__name__)
-CORS(app)   # ← allow Chatling requests
+CORS(app)
 
-@app.route("/", methods=["GET"])
+@app.route("/", methods=["GET", "HEAD"])
 def home():
     return "Lead relay running", 200
 
@@ -29,3 +30,9 @@ def capture_lead():
             "status": "error",
             "message": str(e)
         }), 500
+
+
+# IMPORTANT: Render port binding
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
