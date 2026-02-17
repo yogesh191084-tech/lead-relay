@@ -6,23 +6,27 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-GAS_URL = "https://script.google.com/macros/s/AKfycbz-tgKm6cIldXu4IWsDcQtZHj_222iaGgkidNEriRZ3zE6S5gKaNIhR8foSerIVERyR/exec"
-
-@app.route("/", methods=["GET"])
+@app.route("/", methods=["GET", "HEAD"])
 def home():
     return "Lead relay running", 200
 
-@app.route("/lead", methods=["GET","POST","OPTIONS"])
-def lead():
+
+@app.route("/lead", methods=["POST", "OPTIONS"])
+def capture_lead():
+
+    # ✅ Ignore browser preflight
+    if request.method == "OPTIONS":
+        return "", 200
+
     try:
-        data = request.form.to_dict()
-        if not data:
-            data = request.args.to_dict()
+        # accept both query and form (Chatling sends query)
+        data = request.args.to_dict() or request.form.to_dict()
+
+        gas_url = "https://script.google.com/macros/s/AKfycbz-tgKm6cIldXu4IWsDcQtZHj_222iaGgkidNEriRZ3zE6S5gKaNIhR8foSerIVERyR/exec"
+
+        r = requests.post(gas_url, data=data, timeout=15)
 
         print("RECEIVED:", data)
-
-        r = requests.post(GAS_URL, data=data, timeout=10)
-
         print("GAS:", r.status_code, r.text)
 
         return jsonify({
@@ -33,7 +37,8 @@ def lead():
 
     except Exception as e:
         return jsonify({
-            "error": str(e)
+            "status": "error",
+            "message": str(e)
         }), 500
 
 
