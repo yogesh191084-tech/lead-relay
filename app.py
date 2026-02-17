@@ -6,7 +6,7 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-GAS_URL = "https://script.google.com/macros/s/AKfycbxtR-4ur944ZAFyxMHu0fDgtRcjUjZyez64BMD2QZjMAvLzJ4r_lv7McEqwNFPBQnNd/exec"
+GAS_URL = "https://script.google.com/macros/s/AKfycbz-tgKm6cIldXu4IWsDcQtZHj_222iaGgkidNEriRZ3zE6S5gKaNIhR8foSerIVERyR/exec"
 
 @app.route("/", methods=["GET"])
 def home():
