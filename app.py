@@ -6,28 +6,20 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-@app.route("/", methods=["GET", "HEAD"])
-def home():
-    return "Lead relay running", 200
+GAS_URL = "https://script.google.com/macros/s/AKfycbz-tgKm6cIldXu4IWsDcQtZHj_222iaGgkidNEriRZ3zE6S5gKaNIhR8foSerIVERyR/exec"
+
+
+@app.route("/", methods=["GET"])
+def health():
+    return "OK", 200
 
 
 @app.route("/lead", methods=["POST", "OPTIONS"])
 def capture_lead():
-
-    # ✅ Ignore browser preflight
-    if request.method == "OPTIONS":
-        return "", 200
-
     try:
-        # accept both query and form (Chatling sends query)
-        data = request.args.to_dict() or request.form.to_dict()
+        data = request.form.to_dict()
 
-        gas_url = "https://script.google.com/macros/s/AKfycbz-tgKm6cIldXu4IWsDcQtZHj_222iaGgkidNEriRZ3zE6S5gKaNIhR8foSerIVERyR/exec"
-
-        r = requests.post(gas_url, data=data, timeout=15)
-
-        print("RECEIVED:", data)
-        print("GAS:", r.status_code, r.text)
+        r = requests.post(GAS_URL, data=data, timeout=20)
 
         return jsonify({
             "status": "ok",
