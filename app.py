@@ -8,39 +8,32 @@ CORS(app)
 
 GAS_URL = "https://script.google.com/macros/s/AKfycbxtR-4ur944ZAFyxMHu0fDgtRcjUjZyez64BMD2QZjMAvLzJ4r_lv7McEqwNFPBQnNd/exec"
 
-
-@app.route("/", methods=["GET", "HEAD"])
+@app.route("/", methods=["GET"])
 def home():
     return "Lead relay running", 200
 
-
-@app.route("/lead", methods=["POST", "OPTIONS"])
-def capture_lead():
+@app.route("/lead", methods=["GET","POST","OPTIONS"])
+def lead():
     try:
-        # accept both query + form
         data = request.form.to_dict()
         if not data:
             data = request.args.to_dict()
 
-        print("RECEIVED FROM CHATLNG:", data)
+        print("RECEIVED:", data)
 
-        r = requests.post(GAS_URL, data=data, timeout=15)
+        r = requests.post(GAS_URL, data=data, timeout=10)
 
-        print("GAS STATUS:", r.status_code)
-        print("GAS RESPONSE:", r.text)
+        print("GAS:", r.status_code, r.text)
 
         return jsonify({
-            "status": "success",
-            "gas_status": r.status_code,
-            "gas_response": r.text,
-            "received": data
+            "status": "ok",
+            "received": data,
+            "gas": r.text
         }), 200
 
     except Exception as e:
-        print("ERROR:", str(e))
         return jsonify({
-            "status": "error",
-            "message": str(e)
+            "error": str(e)
         }), 500
 
 
